@@ -5,58 +5,65 @@ import { Conta } from './models/Conta';  // Importando o modelo
 
 function App() {
   const [transacoes, setTransacoes] = useState([]);
+  const [contas, setContas] = useState([]); // Estado para armazenar as contas
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
+  const [contaSelecionada, setContaSelecionada] = useState(""); // Nova conta selecionada
   const [erro, setErro] = useState(null);
 
-  // Carregar as transações ao carregar o componente
+  // Carregar transações e contas ao carregar o componente
   useEffect(() => {
-    api.get("/transacoes")
-      .then((response) => {
-        const transacoesData = response.data.map((transacaoData) => {
+    Promise.all([
+      api.get("/transacoes"),
+      api.get("/contas"),
+    ])
+      .then(([transacoesRes, contasRes]) => {
+        const transacoesData = transacoesRes.data.map((transacaoData) => {
           const conta = new Conta(transacaoData.conta.id, transacaoData.conta.nome, transacaoData.conta.saldo);
           return new Transacao(transacaoData.id, transacaoData.descricao, transacaoData.valor, transacaoData.data, conta);
         });
         setTransacoes(transacoesData);
+        setContas(contasRes.data);
       })
       .catch((error) => {
-        console.error("Erro ao buscar transações:", error);
+        console.error("Erro ao buscar dados:", error);
       });
-  });
+  }, []);
 
   // Função para adicionar transação
   const handleSubmit = (event) => {
     event.preventDefault();
-  
-    if (!descricao || !valor) {
-      setErro("Descrição e valor são obrigatórios");
+
+    if (!descricao || !valor || !contaSelecionada) {
+      setErro("Descrição, valor e conta são obrigatórios.");
       return;
     }
-  
+
     const novaTransacao = {
       descricao,
       valor: parseFloat(valor),
       data: new Date().toISOString(),
-      contaId: 1,  // Certifique-se de que este ID é válido e corresponde a uma conta existente no banco
+      contaId: parseInt(contaSelecionada), // Associa a transação à conta selecionada
     };
-  
-    console.log("Transação a ser enviada:", novaTransacao);  // Log para verificar a transação
-  
+
     api.post("/transacoes", novaTransacao)
       .then((response) => {
-        console.log("Resposta da API:", response);
-        // Resto do código...
+        setTransacoes([...transacoes, response.data]);
+        setDescricao("");
+        setValor("");
+        setContaSelecionada("");
+        setErro(null);
       })
       .catch((error) => {
         console.error("Erro ao adicionar transação:", error);
         setErro("Erro ao adicionar transação.");
       });
   };
-  
+
   return (
     <div>
       <h1>Controle Financeiro</h1>
-      
+
       {/* Exibir erro, se houver */}
       {erro && <p style={{ color: "red" }}>{erro}</p>}
 
@@ -80,6 +87,21 @@ function App() {
             required
           />
         </div>
+        <div>
+          <label>Conta:</label>
+          <select
+            value={contaSelecionada}
+            onChange={(e) => setContaSelecionada(e.target.value)}
+            required
+          >
+            <option value="">Selecione uma conta</option>
+            {contas.map((conta) => (
+              <option key={conta.id} value={conta.id}>
+                {conta.nome} (Saldo: R$ {conta.saldo.toFixed(2)})
+              </option>
+            ))}
+          </select>
+        </div>
         <button type="submit">Adicionar Transação</button>
       </form>
 
@@ -87,11 +109,11 @@ function App() {
       <ul>
         {transacoes.map((transacao) => (
           <li key={transacao.id}>
-            {transacao.descricao} - R$ {transacao.valor ? transacao.valor.toFixed(2) : 'Valor não disponível'}
+            {transacao.descricao} - R$ {transacao.valor.toFixed(2)}
             <br />
             <small>{new Date(transacao.data).toLocaleString()}</small>
             <br />
-            <strong>Conta: {transacao.conta.nome}</strong>
+            <strong>Conta: {transacao.conta ? transacao.conta.nome : "Conta não disponível"}</strong>
           </li>
         ))}
       </ul>

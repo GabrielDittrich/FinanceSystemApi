@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(FinanceContext))]
-    [Migration("20250116155912_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250116195922_SegundaMigration")]
+    partial class SegundaMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,7 +29,6 @@ namespace Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("Saldo")
@@ -53,7 +52,6 @@ namespace Backend.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Descricao")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("Valor")

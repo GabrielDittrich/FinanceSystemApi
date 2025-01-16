@@ -22,6 +22,32 @@ namespace Backend.Controllers
             return await _context.Transacoes.Include(t => t.Conta).ToListAsync();
         }
 
+        [HttpPut("{id}/alterar-conta")]
+        public async Task<IActionResult> AlterarConta(int id, [FromBody] int novaContaId)
+        {
+            // Verificar se a transação existe
+            var transacao = await _context.Transacoes.FindAsync(id);
+            if (transacao == null)
+            {
+                return NotFound("Transação não encontrada.");
+            }
+
+            // Verificar se a nova conta existe
+            var conta = await _context.Contas.FindAsync(novaContaId);
+            if (conta == null)
+            {
+                return NotFound("Conta não encontrada.");
+            }
+
+            // Alterar a conta associada à transação
+            transacao.ContaId = novaContaId;
+
+            // Salvar as alterações no banco de dados
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         // GET: api/transacoes/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Transacao>> GetTransacao(int id)

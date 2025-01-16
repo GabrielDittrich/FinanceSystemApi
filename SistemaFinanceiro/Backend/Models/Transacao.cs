@@ -10,4 +10,14 @@ public class Transacao
     public DateTime Data { get; set; }
     public int ContaId { get; set; }
     public Conta? Conta { get; set; }
+
+    public void AlterarConta(int novaContaId)
+    {
+        if (novaContaId <= 0)
+        {
+            throw new ArgumentException("ID da conta inválido.");
+        }
+
+        ContaId = novaContaId;
+    }
 }

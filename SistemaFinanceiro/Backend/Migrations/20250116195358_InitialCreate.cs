@@ -21,7 +21,7 @@ namespace Backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(type: "longtext", nullable: false)
+                    Nome = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Saldo = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
                 },
@@ -37,7 +37,7 @@ namespace Backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Descricao = table.Column<string>(type: "longtext", nullable: false)
+                    Descricao = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Valor = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     Data = table.Column<DateTime>(type: "datetime(6)", nullable: false),
