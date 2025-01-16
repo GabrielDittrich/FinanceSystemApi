@@ -1,7 +1,7 @@
-# ControleFinanceiro
+# Sistema de Controle Financeiro
 
-ControleFinanceiro é um sistema de gerenciamento financeiro que permite o controle de transações financeiras, contas e categorias, com integração em uma API RESTful.<br>
-O sistema foi desenvolvido utilizando C#, .NET, MySQL e React, oferecendo uma interface intuitiva para gestão de finanças pessoais ou empresariais.
+O Sistema de Controle Financeiro é uma solução abrangente de gerenciamento financeiro que possibilita o controle eficiente de transações financeiras, contas e categorias.
+<br>Ele se destaca pela sua integração com uma API RESTful, facilitando a comunicação entre diferentes partes do sistema.
 
 ## Tecnologias Utilizadas
 
